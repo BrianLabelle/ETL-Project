@@ -20,10 +20,9 @@ primary_results = 'data\election\primary_results_clean.csv'
 
 
 Cell #3.
-# The cleaned data read the CSV in pandas
+# The cleaned data read the CSV in pandas | converted fips to 5 digit position with leading zeros
 # https://stackoverflow.com/questions/23836277/add-leading-zeros-to-strings-in-pandas-dataframe
 df_election = pd.read_csv(primary_results, encoding="ISO-8859-1",converters={'fips': '{:0>5}'.format})
-# Preview of the DataFrame
 df_election.head() 
 
 Cell #4.
@@ -32,44 +31,67 @@ from sqlalchemy import create_engine
 engine = create_engine('postgresql://postgres:password@localhost:5432/etlproject')
 connection = engine.connect()
 
-Cell #6.
-# injected progress table into a pandas dataframe
-# cleaned up fips via filtering.
 df_FIPS = pd.read_sql_query('''SELECT * FROM public."FIPS";''', engine)
 
-Cell #7.
+Cell #5.
 # renamed columns to easily merge dataframes on column titles
 df_FIPS.rename(columns={'ZIP':'zipcode','COUNTYNAME':'county','STATE':'state','STCOUNTYFP':'fips','CLASSFP':'classfp'},inplace=True)
 
-Cell #8.
 # Merged elections dataframe with fips dataframe on the common fips column
 df_merge = pd.merge(df_election, df_FIPS, how="left", on=["fips", "fips"])
 
-Cell #9.
+Cell #6.
 # renamed & dropped unneeded duplicate columns
 df_merge.rename(columns={"county_y":"county"})
 df_merge.drop(['state_x','county_x','state_y','classfips'], axis=1, inplace=True)
 df_merge.head()
 
-
-Cell #10.
+Cell #7.
 # importing into pandas tax information for the 2014 fiscal year, focusing on AGI & Salaries / Wages
 # formating zipcode to 5 positions.
 tax_file = 'data/tax/2014.csv'
 df_tax = pd.read_csv(tax_file, encoding="ISO-8859-1",converters={'zipcode': '{:0>5}'.format})
 df_tax.head()
 
-Cell #11.
+Cell #8.
 # copying out & renaming AGI, Salaries / Wages & Zipcodes to merge with 2016 primary results merging on zipcode.
+# column "a00200" is Salaries, "a00100" is Adjusted Gross Income
 df_merge_tx_clean = df_tax[['a00200','a00100','zipcode']].copy()
 df_final= pd.merge(df_merge, df_merge_tx_clean, how="left", on=["zipcode", "zipcode"])
 df_final.rename(columns={"a00200":"Salaries","a00100":"Adjusted Gross Income"}, inplace=True)
-df_final.head()
+df_final.head() 
 
-Cell #12.
-# dump entire data into excel for previewing prior to a pands to database
+
+Cell #09.
+# dump entire data into excel for previewing prior to a pandas to database import
 # outputting data to an excel spreadsheet.
-df_final.to_excel("2019-etl-vote-tax-fips.xlsx") 
+# extraction takes 9 minutes to process
+
+# uncomment to data dump to excel
+#df_final.to_excel("data\2019-etl-vote-tax-fips.xlsx")  
+
+Cell #10.
+from sqlalchemy import create_engine
+import psycopg2 
+import io
+
+Cell #11.
+# inject our merged dataframe ( 2016 Election Results | 2014 Tax Information merged via the FIPS Crosswalk union table.)
+# into the postgres database called etlproject where it creates a table called electiontaxfips.
+# it will replace the table if it exists.
+
+engine = create_engine('postgresql://postgres:password@localhost:5432/etlproject')
+
+df_final.head(0).to_sql('electiontaxfips', engine, if_exists='replace',index=False) #truncates the table
+
+conn = engine.raw_connection()
+cur = conn.cursor()
+output = io.StringIO()
+df_final.to_csv(output, sep='\t', header=False, index=False)
+output.seek(0)
+contents = output.getvalue()
+cur.copy_from(output, 'electiontaxfips', null="") # null values become ''
+conn.commit()
 
 
 
