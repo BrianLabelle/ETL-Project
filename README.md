@@ -6,7 +6,7 @@ HarLabs has been tasked with merging data sources from the 2016 Primary Election
 We used a 3rd data source to merge on the zipcode based on the US County FIPS. FIPS (Federal Information Processing Standards) are a set of standards that describe document processing, encryption algorithms and other information technology standards for use within non-military government agencies and by government contractors and vendors who work with the agencies.
 
 
-![PewlettHackard](images/ph-logo-trimmed.jpg)
+![PewlettHackard](images/splash.jpg)
 
 
 ## Technology
@@ -17,6 +17,7 @@ In order for us to complete this customer request we utilized:
    - Postgres
    - Microsoft Excel
    - CSV files
+   - DbVis Software ( Postgres ER Diagram )
    
 ## Data Sources
   - kaggle
