@@ -6,7 +6,7 @@ HarLabs has been tasked with merging data sources from the 2016 Primary Election
 We used a 3rd data source to merge on the zipcode based on the US County FIPS. FIPS (Federal Information Processing Standards) are a set of standards that describe document processing, encryption algorithms and other information technology standards for use within non-military government agencies and by government contractors and vendors who work with the agencies.
 
 
-![PewlettHackard](images/splash.jpg)
+![ETL-Project](images/splash.jpg)
 
 
 ## Technology
@@ -17,11 +17,11 @@ In order for us to complete this customer request we utilized:
    - Postgres
    - Microsoft Excel
    - CSV files
-   - DbVis Software ( Postgres ER Diagram )
+   - Umbrello ( Postgres ER Diagram )
    
 ## Data Sources
-  - kaggle
-  - 
+  - kaggle: ( 2016 Primary Election Results, 2014 Individual Income Tax Statistics & )
+
   
 # Instructions
 1. pull down the entire GitHub Project
@@ -33,32 +33,17 @@ In order for us to complete this customer request we utilized:
 	b. create a table called electiontaxfips in your connected database, if exist, it replaces it.
 	c. creates a output csv file which is then imported into the postgres database.
 	
-	     
+![ETL-Project](images/postgres-output.jpg)
 
 _________________________________________________________________________________
 
-# Summary
 
-**Create an image file of your ERD.**
-[Download Image](https://github.com/BrianLabelle/pewletthackard/blob/master/images/2019-PH-SQL-ER-Diagram-Using-MySQL.jpg)
-
-**Create a .sql file of your table schemata.**
-[Click to view SQL Schema file](https://github.com/BrianLabelle/pewletthackard/blob/master/sql/2019-08-04-PostGres-SQL-Schema.sql)
-
-**Create a .sql file of your queries.**
-[Click to view SQL query file](https://github.com/BrianLabelle/pewletthackard/blob/master/sql/2019-Pewlett-Hackard-Data-Analysis-Answers.sql)
-
-**(Optional) Create a Jupyter Notebook of the bonus analysis.**
-[click to view Jupyter Notebook file](https://github.com/BrianLabelle/pewletthackard/blob/master/HW-07-Postgres-Employee_Database-Bonus.ipynb)
-
-
-_________________________________________________________________________________
 
 
 ## Submission
 
-https://github.com/BrianLabelle/pewletthackard
+https://https://github.com/BrianLabelle/ETL-Project
 
 - - -
 
-© 2019 Rice Cookers | Brian Labelle | Sous-Coding Chef
+© 2019 Rice Cookers | HarLabs | Richard Harris - Brian Labelle | Sous-Coding Chefs
