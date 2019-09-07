@@ -1,0 +1,118 @@
+1. addressed the leading zeros
+2. missing fips / incorrect fips ( 9xxxxxxxx )
+
+
+2019-09
+
+Cell #1.
+# Dependencies
+import pandas as pd
+import numpy as np
+import sqlalchemy
+import psycopg2
+import matplotlib as plt
+%matplotlib inline
+
+Cell #2. 
+# Name of the CSV file Loading the Primary Voting Results Clean.
+# Primary Results were cleaned via excel due to missing FIPS and remapped by state if missing or erroneous fips due to time constraint.
+primary_results = 'data\election\primary_results_clean.csv'
+
+
+Cell #3.
+# The cleaned data read the CSV in pandas
+# https://stackoverflow.com/questions/23836277/add-leading-zeros-to-strings-in-pandas-dataframe
+df_election = pd.read_csv(primary_results, encoding="ISO-8859-1",converters={'fips': '{:0>5}'.format})
+# Preview of the DataFrame
+df_election.head() 
+
+Cell #4.
+# We imported FIPS CSV spreadsheet into a PostGres Database & created table via sql.
+from sqlalchemy import create_engine
+engine = create_engine('postgresql://postgres:password@localhost:5432/etlproject')
+connection = engine.connect()
+
+Cell #6.
+# injected progress table into a pandas dataframe
+# cleaned up fips via filtering.
+df_FIPS = pd.read_sql_query('''SELECT * FROM public."FIPS";''', engine)
+
+Cell #7.
+# renamed columns to easily merge dataframes on column titles
+df_FIPS.rename(columns={'ZIP':'zipcode','COUNTYNAME':'county','STATE':'state','STCOUNTYFP':'fips','CLASSFP':'classfp'},inplace=True)
+
+Cell #8.
+# Merged elections dataframe with fips dataframe on the common fips column
+df_merge = pd.merge(df_election, df_FIPS, how="left", on=["fips", "fips"])
+
+Cell #9.
+# renamed & dropped unneeded duplicate columns
+df_merge.rename(columns={"county_y":"county"})
+df_merge.drop(['state_x','county_x','state_y','classfips'], axis=1, inplace=True)
+df_merge.head()
+
+
+Cell #10.
+# importing into pandas tax information for the 2014 fiscal year, focusing on AGI & Salaries / Wages
+# formating zipcode to 5 positions.
+tax_file = 'data/tax/2014.csv'
+df_tax = pd.read_csv(tax_file, encoding="ISO-8859-1",converters={'zipcode': '{:0>5}'.format})
+df_tax.head()
+
+Cell #11.
+# copying out & renaming AGI, Salaries / Wages & Zipcodes to merge with 2016 primary results merging on zipcode.
+df_merge_tx_clean = df_tax[['a00200','a00100','zipcode']].copy()
+df_final= pd.merge(df_merge, df_merge_tx_clean, how="left", on=["zipcode", "zipcode"])
+df_final.rename(columns={"a00200":"Salaries","a00100":"Adjusted Gross Income"}, inplace=True)
+df_final.head()
+
+Cell #12.
+# dump entire data into excel for previewing prior to a pands to database
+# outputting data to an excel spreadsheet.
+df_final.to_excel("2019-etl-vote-tax-fips.xlsx") 
+
+
+
+AK
+CT
+IL
+KS
+MA
+ME
+ND
+NH
+RI
+VT
+WY
+
+UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
