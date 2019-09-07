@@ -1,5 +1,5 @@
 # ETLProject | Vote - Tax - FIPS
-ETL Project | Richard Harris | Brian Labelle
+Richard Harris | Brian Labelle
 
 ## Background
 HarLabs has been tasked with merging data sources from the 2016 Primary Election results with 2014 Salary / Wages.
@@ -20,7 +20,7 @@ In order for us to complete this customer request we utilized:
    - Umbrello ( Postgres ER Diagram )
    
 ## Data Sources
-  - kaggle: ( 2016 Primary Election Results, 2014 Individual Income Tax Statistics & )
+  - kaggle: ( 2016 Primary Election Results, 2014 Individual Income Tax Statistics & FIPS )
 
   
 # Instructions
