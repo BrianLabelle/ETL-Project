@@ -17,7 +17,8 @@ In order for us to complete this customer request we utilized:
    - Postgres
    - Microsoft Excel
    - CSV files
-   - Umbrello ( Postgres ER Diagram )
+   - QuickDBD ( Postgres ER Diagram )
+   - SQLAlchemy
    
 ## Data Sources
   - kaggle: ( 2016 Primary Election Results, 2014 Individual Income Tax Statistics & FIPS )
