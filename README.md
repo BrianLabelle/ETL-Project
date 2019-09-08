@@ -8,6 +8,8 @@ We used a 3rd data source to merge on the zipcode based on the US County FIPS. F
 
 ![ETL-Project](images/splash.jpg)
 
+![ETL-Project](video/splash.mp4)
+
 
 ## Technology
 
